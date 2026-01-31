@@ -1,42 +1,74 @@
 <x-app-layout>
-  <x-slot name="header">
-    <div class="flex items-start justify-between gap-4">
-      <div>
-        <h2 class="font-semibold text-xl text-gray-900 dark:text-white leading-tight">Admin • Purchases</h2>
-        <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">All transactions in the system.</p>
-      </div>
-      <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center rounded-2xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-gray-50 dark:bg-white/5 dark:border-white/10 dark:text-white dark:hover:bg-white/10">
-        Admin Dashboard
-      </a>
+    <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h1 class="page-title display-6 fw-bold mb-1 text-gradient-primary">Transaction History</h1>
+            <p class="page-subtitle mb-0">System purchases and transfers.</p>
+        </div>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-glass rounded-pill px-4 fw-bold text-main hover-scale">
+            <i class="fas fa-arrow-left me-2"></i>Dashboard
+        </a>
     </div>
-  </x-slot>
 
-  <div class="rounded-3xl border border-gray-200 bg-white shadow-sm dark:bg-white/5 dark:border-white/10 overflow-hidden">
-    <div class="p-6">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left">
-          <thead>
-            <tr class="border-b border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200">
-              <th class="py-2 pr-4">Land</th>
-              <th class="py-2 pr-4">Buyer</th>
-              <th class="py-2 pr-4">Seller</th>
-              <th class="py-2 pr-4">Price</th>
-              <th class="py-2 pr-4">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($purchases as $p)
-              <tr class="border-b border-gray-100 dark:border-white/5">
-                <td class="py-3 pr-4 font-semibold text-gray-900 dark:text-white">{{ $p->land->title ?? 'Deleted land' }}</td>
-                <td class="py-3 pr-4 text-gray-600 dark:text-gray-300">{{ $p->buyer->name ?? 'Unknown' }} ({{ $p->buyer->email ?? '' }})</td>
-                <td class="py-3 pr-4 text-gray-600 dark:text-gray-300">{{ $p->seller->name ?? 'Unknown' }} ({{ $p->seller->email ?? '' }})</td>
-                <td class="py-3 pr-4 text-gray-900 dark:text-white">{{ number_format((float)$p->price, 2) }}</td>
-                <td class="py-3 pr-4 text-gray-500 dark:text-gray-300 text-sm">{{ $p->created_at->format('Y-m-d') }}</td>
-              </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
+    <div class="card card-ui border-0 overflow-hidden shadow-sm">
+        <div class="card-header d-flex align-items-center gap-3">
+            <div class="bg-gradient-primary rounded-3 p-2 text-white" style="width: 44px; height: 44px;">
+                <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+            <div>
+                <h5 class="mb-0 fw-bold text-main font-serif">All Transactions</h5>
+                <p class="text-muted small mb-0">Financial activity</p>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-ui align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Property</th>
+                            <th>Buyer</th>
+                            <th>Seller</th>
+                            <th>Price</th>
+                            <th class="text-end pe-4">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($purchases as $p)
+                        <tr>
+                            <td class="ps-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-gradient-primary p-2 rounded-3 text-white d-flex align-items-center justify-content-center w-40px h-40px">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <span class="fw-bold text-main font-serif">{{ $p->land->title ?? 'Deleted' }}</span>
+                            </div>
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-main">{{ $p->buyer->name ?? '—' }}</div>
+                                <div class="small text-muted fs-7">{{ $p->buyer->email ?? '' }}</div>
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-main">{{ $p->seller->name ?? '—' }}</div>
+                                <div class="small text-muted fs-7">{{ $p->seller->email ?? '' }}</div>
+                            </td>
+                            <td>
+                                <span class="fw-bold text-success font-serif">{{ number_format((float)$p->price, 2) }} <span class="fs-7 text-muted">LNDC</span></span>
+                            </td>
+                            <td class="text-end pe-4 small text-muted">{{ $p->created_at->format('M d, Y') }}</td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="fas fa-receipt fa-2x mb-3 opacity-50"></i>
+                                <p class="fw-bold mb-0">No transactions yet</p>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer border-glass p-3 text-end">
+            <small class="text-muted">Total: {{ $purchases->count() }}</small>
+        </div>
     </div>
-  </div>
 </x-app-layout>

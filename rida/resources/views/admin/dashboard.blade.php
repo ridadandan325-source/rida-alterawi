@@ -1,72 +1,109 @@
 <x-app-layout>
-  <x-slot name="header">
-    <div class="flex items-start justify-between gap-4">
-      <div>
-        <h2 class="font-semibold text-xl text-gray-900 dark:text-white leading-tight">Admin Dashboard</h2>
-        <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">System overview & latest activity.</p>
-      </div>
-
-      <div class="flex gap-2">
-        <a href="{{ route('admin.lands.index') }}" class="inline-flex items-center rounded-2xl bg-black px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90">Manage Lands</a>
-        <a href="{{ route('admin.users.index') }}" class="inline-flex items-center rounded-2xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-gray-50 dark:bg-white/5 dark:border-white/10 dark:text-white dark:hover:bg-white/10">Users</a>
-        <a href="{{ route('admin.purchases.index') }}" class="inline-flex items-center rounded-2xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-gray-50 dark:bg-white/5 dark:border-white/10 dark:text-white dark:hover:bg-white/10">Purchases</a>
-      </div>
+  <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title display-6 fw-bold mb-1 text-gradient-primary">Admin Dashboard</h1>
+      <p class="page-subtitle mb-0">System overview and activity.</p>
     </div>
-  </x-slot>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4">
-    <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:bg-white/5 dark:border-white/10">
-      <div class="text-sm text-gray-500 dark:text-gray-300">Users</div>
-      <div class="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white">{{ $usersCount }}</div>
-    </div>
-
-    <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:bg-white/5 dark:border-white/10">
-      <div class="text-sm text-gray-500 dark:text-gray-300">All Lands</div>
-      <div class="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white">{{ $landsCount }}</div>
-    </div>
-
-    <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:bg-white/5 dark:border-white/10">
-      <div class="text-sm text-gray-500 dark:text-gray-300">For Sale</div>
-      <div class="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white">{{ $forSaleCount }}</div>
-    </div>
-
-    <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:bg-white/5 dark:border-white/10">
-      <div class="text-sm text-gray-500 dark:text-gray-300">Sold</div>
-      <div class="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white">{{ $soldCount }}</div>
-    </div>
-
-    <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:bg-white/5 dark:border-white/10">
-      <div class="text-sm text-gray-500 dark:text-gray-300">Purchases</div>
-      <div class="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white">{{ $purchasesCount }}</div>
-    </div>
-
-    <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:bg-white/5 dark:border-white/10">
-      <div class="text-sm text-gray-500 dark:text-gray-300">Total Volume</div>
-      <div class="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white">{{ number_format((float)$totalVolume, 2) }}</div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="{{ route('admin.lands.index') }}" class="btn btn-primary rounded-pill px-4 fw-bold hover-scale">
+        <i class="fas fa-map-marked-alt me-2"></i>Lands
+      </a>
+      <a href="{{ route('admin.users.index') }}" class="btn btn-glass rounded-pill px-4 fw-bold text-main hover-scale">
+        <i class="fas fa-users me-2"></i>Users
+      </a>
+      <a href="{{ route('admin.purchases.index') }}" class="btn btn-glass rounded-pill px-4 fw-bold text-main hover-scale">
+        <i class="fas fa-shopping-cart me-2"></i>Purchases
+      </a>
     </div>
   </div>
 
-  <div class="mt-6 rounded-3xl border border-gray-200 bg-white shadow-sm dark:bg-white/5 dark:border-white/10 overflow-hidden">
-    <div class="p-5 border-b border-gray-200 dark:border-white/10">
-      <div class="font-bold text-gray-900 dark:text-white">Latest Purchases</div>
-      <div class="text-sm text-gray-500 dark:text-gray-300">Last 6 transactions</div>
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="card card-ui border-0 h-100 hover-scale">
+        <div class="card-body p-4">
+          <div class="small text-muted text-uppercase fw-bold ls-1 mb-2">Users</div>
+          <div class="h4 mb-0 fw-bold text-main font-serif">{{ $usersCount }}</div>
+        </div>
+      </div>
     </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="card card-ui border-0 h-100 hover-scale">
+        <div class="card-body p-4">
+          <div class="small text-muted text-uppercase fw-bold ls-1 mb-2">Lands</div>
+          <div class="h4 mb-0 fw-bold text-main font-serif">{{ $landsCount }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="card card-ui border-0 h-100 hover-scale">
+        <div class="card-body p-4">
+          <div class="small text-muted text-uppercase fw-bold ls-1 mb-2">For Sale</div>
+          <div class="h4 mb-0 fw-bold text-main font-serif">{{ $forSaleCount }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="card card-ui border-0 h-100 hover-scale">
+        <div class="card-body p-4">
+          <div class="small text-muted text-uppercase fw-bold ls-1 mb-2">Sold</div>
+          <div class="h4 mb-0 fw-bold text-main font-serif">{{ $soldCount }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="card card-ui border-0 h-100 hover-scale">
+        <div class="card-body p-4">
+          <div class="small text-muted text-uppercase fw-bold ls-1 mb-2">Purchases</div>
+          <div class="h4 mb-0 fw-bold text-main font-serif">{{ $purchasesCount }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="card card-ui border-0 h-100 hover-scale">
+        <div class="card-body p-4">
+          <div class="small text-muted text-uppercase fw-bold ls-1 mb-2">Volume</div>
+          <div class="h4 mb-0 fw-bold text-main font-serif text-truncate">{{ number_format((float) $totalVolume, 0) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <div class="p-5 space-y-3">
+  <div class="card card-ui border-0 overflow-hidden shadow-sm">
+    <div class="card-header d-flex align-items-center gap-3">
+      <div class="bg-gradient-primary rounded-3 p-2 text-white" style="width: 44px; height: 44px;">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div>
+        <h5 class="mb-0 fw-bold text-main font-serif">Latest Transactions</h5>
+        <p class="text-muted small mb-0">Purchase activity</p>
+      </div>
+    </div>
+    <div class="card-body p-4">
       @forelse($latestPurchases as $p)
-        <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:bg-white/5 dark:border-white/10">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <div class="font-semibold text-gray-900 dark:text-white">{{ $p->land->title ?? 'Deleted land' }}</div>
-              <div class="text-xs text-gray-500 dark:text-gray-300 mt-1">
-                Buyer: {{ $p->buyer->name ?? 'Unknown' }} • Seller: {{ $p->seller->name ?? 'Unknown' }} • {{ $p->created_at->format('Y-m-d') }}
+        <div class="rounded-3 p-4 mb-3 card-ui border-0 hover-bg-glass">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="bg-success bg-opacity-10 p-2 rounded-3 text-success">
+                <i class="fas fa-file-contract"></i>
+              </div>
+              <div>
+                <div class="fw-bold text-main font-serif mb-1">{{ $p->land->title ?? 'Deleted' }}</div>
+                <div class="small text-muted">
+                  {{ $p->buyer->name ?? '—' }} ← {{ $p->seller->name ?? '—' }} · {{ $p->created_at->format('M d, Y') }}
+                </div>
               </div>
             </div>
-            <div class="font-bold text-gray-900 dark:text-white">{{ number_format((float)$p->price, 2) }}</div>
+            <div class="text-end">
+              <div class="fw-bold text-primary font-serif">{{ number_format((float) $p->price, 2) }} <span class="fs-7 text-muted">LNDC</span></div>
+              <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 mt-1">Done</span>
+            </div>
           </div>
         </div>
       @empty
-        <div class="text-gray-600 dark:text-gray-300">No purchases yet.</div>
+        <div class="text-center py-5 text-muted">
+          <i class="fas fa-inbox fa-2x mb-3 opacity-50"></i>
+          <p class="fw-bold mb-0">No purchases yet</p>
+        </div>
       @endforelse
     </div>
   </div>

@@ -21,7 +21,32 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
+        'wallet_balance',
     ];
+
+    /**
+     * Get the user's role.
+     */
+    public function getRoleAttribute(): string
+    {
+        return $this->is_admin ? 'admin' : 'user';
+    }
+
+    public function lands()
+    {
+        return $this->hasMany(Land::class);
+    }
+
+    public function ownerships()
+    {
+        return $this->hasMany(LandOwnership::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -43,6 +68,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'wallet_balance' => 'decimal:2',
         ];
     }
 }

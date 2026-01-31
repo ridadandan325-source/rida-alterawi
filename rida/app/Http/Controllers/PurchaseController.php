@@ -4,26 +4,48 @@ namespace App\Http\Controllers;
 
 use App\Models\Land;
 use App\Models\Purchase;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use App\Services\MarketService;
+use Illuminate\Support\Facades\Gate;
+
 class PurchaseController extends Controller
 {
-    // صفحة مشترياتي
+    protected $marketService;
+
+    public function __construct(MarketService $marketService)
+    {
+        $this->marketService = $marketService;
+    }
+
+    /**
+     * Display purchases and sales of the authenticated user
+     */
     public function myPurchases()
     {
-        $purchases = Purchase::with(['land', 'buyer', 'seller'])
+        // الأراضي اللي اشتراها المستخدم
+        $buying = Purchase::with(['land', 'seller'])
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
 
-        return view('purchases.index', compact('purchases'));
+        // الأراضي اللي باعها المستخدم
+        $selling = Purchase::with(['land', 'buyer'])
+            ->where('seller_id', Auth::id())
+            ->latest()
+            ->get();
+
+        return view('purchases.index', compact('buying', 'selling'));
     }
 
-    // صفحة مبيعاتي
+    /**
+     * Display sales page
+     */
     public function mySales()
     {
-        $sales = Purchase::with(['land', 'buyer', 'seller'])
+        $sales = Purchase::with(['land', 'buyer'])
             ->where('seller_id', Auth::id())
             ->latest()
             ->get();
@@ -31,71 +53,42 @@ class PurchaseController extends Controller
         return view('purchases.sales', compact('sales'));
     }
 
-    // ✅ صفحة الدفع الوهمي
+    /**
+     * Show checkout page
+     */
     public function checkout(Land $land)
     {
-        // لازم تكون للبيع
-        if (!$land->is_for_sale) {
-            return redirect()->route('purchases.index')->with('error', 'This land is not for sale.');
-        }
-
-        // ممنوع تشتري أرضك
-        if ($land->user_id === Auth::id()) {
-            return redirect()->route('purchases.index')->with('error', 'You cannot buy your own land.');
-        }
-
-        // ممنوع تنشرا مرتين
-        if (Purchase::where('land_id', $land->id)->exists()) {
-            return redirect()->route('purchases.index')->with('error', 'This land is already sold.');
+        try {
+            $this->authorize('buy', $land);
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            $reason = "Purchase criteria not met.";
+            if ($land->user_id === Auth::id()) {
+                $reason = "Conflict: You already own this asset.";
+            } elseif (Auth::user()->wallet_balance < $land->price) {
+                $reason = "Balance: You need " . number_format($land->price, 2) . " LNDC.";
+            }
+            return redirect()->route('map')->with('error', $reason);
         }
 
         return view('checkout', compact('land'));
     }
 
-    // ✅ تنفيذ الدفع الوهمي (هنا يتم الشراء فعلياً)
-    public function payFake(Land $land)
+    /**
+     * Process purchase using LAND Coins
+     */
+    public function payFake(Request $request, Land $land)
     {
-        return DB::transaction(function () use ($land) {
+        try {
+            $this->authorize('buy', $land);
+            $this->marketService->executePurchase(Auth::user(), $land);
 
-            // قفل لمنع شراء مزدوج
-            $land = Land::where('id', $land->id)->lockForUpdate()->first();
-
-            if (!$land || !$land->is_for_sale) {
-                return redirect()->route('purchases.index')->with('error', 'This land is not for sale.');
-            }
-
-            if ($land->user_id === Auth::id()) {
-                return redirect()->route('purchases.index')->with('error', 'You cannot buy your own land.');
-            }
-
-            if (Purchase::where('land_id', $land->id)->exists()) {
-                return redirect()->route('purchases.index')->with('error', 'This land is already sold.');
-            }
-
-            // البائع قبل نقل الملكية
-            $sellerId = $land->user_id;
-
-            // سجل عملية الشراء
-            Purchase::create([
-                'user_id'   => Auth::id(),
-                'seller_id' => $sellerId,
-                'land_id'   => $land->id,
-                'price'     => $land->price,
-            ]);
-
-            // نقل ملكية + مش للبيع
-            $land->user_id = Auth::id();
-            $land->is_for_sale = false;
-            $land->save();
-
-            return redirect()->route('purchases.index')
-                ->with('success', 'Payment successful (Fake) ✅ Land purchased!');
-        });
-    }
-
-    // (اختياري) شراء مباشر - مش مستخدم الآن
-    public function buy(Land $land)
-    {
-        return redirect()->route('checkout.show', $land);
+            return redirect()
+                ->route('lands.index')
+                ->with('success', 'Asset acquired successfully!');
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            return redirect()->back()->with('error', 'Purchase unauthorized.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

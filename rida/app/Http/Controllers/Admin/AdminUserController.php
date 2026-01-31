@@ -25,4 +25,15 @@ class AdminUserController extends Controller
 
         return back()->with('success', 'User role updated ✅');
     }
+
+    public function destroy(User $user)
+    {
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'You cannot delete yourself.');
+        }
+
+        $user->delete();
+
+        return back()->with('success', 'User deleted successfully ✅');
+    }
 }

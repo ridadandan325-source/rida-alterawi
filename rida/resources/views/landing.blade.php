@@ -1,35 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Digital Lands</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Land Coin — Digital Lands</title>
 
   <!-- Tailwind CDN (Landing فقط) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    body { margin: 0; overflow: hidden; }
-    #globe { position: absolute; inset: 0; }
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #globe {
+      position: absolute;
+      inset: 0;
+    }
+
     .glass {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       backdrop-filter: blur(12px);
     }
+
     /* subtle animated glow */
     .glow {
-      position:absolute;
+      position: absolute;
       width: 520px;
       height: 520px;
       border-radius: 999px;
       filter: blur(60px);
       opacity: .55;
       animation: float 7s ease-in-out infinite;
-      pointer-events:none;
+      pointer-events: none;
     }
+
     @keyframes float {
-      0%,100% { transform: translateY(0px); }
-      50% { transform: translateY(-14px); }
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-14px);
+      }
     }
   </style>
 </head>
@@ -42,9 +60,12 @@
   <!-- Dark overlay gradient -->
   <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/85"></div>
 
-  <!-- Soft color glows -->
-  <div class="glow left-[-140px] top-[-140px] bg-violet-500/60"></div>
-  <div class="glow right-[-160px] bottom-[-160px] bg-emerald-400/50" style="animation-delay:1.2s;"></div>
+  <!-- Soft color glows - Matching app colors -->
+  <div class="glow left-[-140px] top-[-140px]" style="background: rgba(30, 58, 138, 0.3);"></div>
+  <div class="glow right-[-160px] bottom-[-160px]" style="background: rgba(37, 99, 235, 0.25); animation-delay:1.2s;">
+  </div>
+  <div class="glow left-[50%] top-[50%]"
+    style="background: rgba(255, 255, 255, 0.1); animation-delay:2.4s; width: 400px; height: 400px;"></div>
 
   <!-- Content -->
   <div class="relative z-10 min-h-screen flex items-center">
@@ -53,12 +74,12 @@
       <!-- Left -->
       <div>
         <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full">
-          <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+          <span class="h-2 w-2 rounded-full" style="background: #2563eb;"></span>
           <span class="text-sm text-white/80">Own digital lands as tokens</span>
         </div>
 
         <h1 class="mt-5 text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
-          Digital Lands
+          Land Coin
           <span class="block text-white/80">Buy • Sell • Explore</span>
         </h1>
 
@@ -69,29 +90,21 @@
 
         <div class="mt-7 flex flex-wrap gap-3">
           <a href="{{ route('register') }}"
-             class="px-5 py-3 rounded-xl bg-white text-black font-bold hover:opacity-90 shadow-lg shadow-white/10">
+            class="px-5 py-3 rounded-xl bg-white text-black font-bold hover:opacity-90 shadow-lg shadow-white/10">
             Create Account
           </a>
 
-          <a href="{{ route('login') }}"
-             class="px-5 py-3 rounded-xl glass font-bold hover:bg-white/10">
+          <a href="{{ route('login') }}" class="px-5 py-3 rounded-xl glass font-bold hover:bg-white/10">
             Login
           </a>
 
           <!-- ✅ تعديل: Preview يروح على /map -->
-          <a href="{{ url('/map') }}"
-             class="px-5 py-3 rounded-xl border border-white/20 font-bold hover:bg-white/10">
-            Explore (Preview)
+          <a href="{{ url('/map') }}" class="px-5 py-3 rounded-xl border border-white/20 font-bold hover:bg-white/10">
+            Explore
           </a>
         </div>
 
-        <div class="mt-6 text-sm text-white/50">
-          Tip: After login, you’ll access the full map, purchases, and sales dashboard.
-        </div>
-
-        <div class="mt-4 text-xs text-white/40">
-          Powered by Laravel + Breeze + Leaflet • Globe animation for a premium first impression.
-        </div>
+      
       </div>
 
       <!-- Right card -->
@@ -126,7 +139,7 @@
 
         <!-- Mini hint -->
         <div class="mt-6 text-xs text-white/50">
-          Preview mode lets visitors explore the map. Buying requires login.
+          Visitors can explore the map. Buying requires login.
         </div>
       </div>
 
@@ -144,7 +157,7 @@
       .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
       .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
       .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
-      .atmosphereColor('#8b5cf6')
+      .atmosphereColor('#2563eb')
       .atmosphereAltitude(0.25)
       .showGraticules(false);
 
@@ -169,4 +182,5 @@
   </script>
 
 </body>
+
 </html>

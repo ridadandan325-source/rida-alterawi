@@ -1,0 +1,81 @@
+/* ============================================
+   Serious Color System - Mapped to App.css
+   ============================================ */
+:root {
+    --gradient-primary: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    --gradient-success: linear-gradient(180deg, #15803d 0%, #166534 100%);
+    --gradient-info: linear-gradient(180deg, #0369a1 0%, #075985 100%);
+}
+
+/* Base Gradient Classes */
+.gradient-primary {
+    background: var(--primary-color) !important;
+}
+
+.gradient-success {
+    background: var(--success-color) !important;
+}
+
+.gradient-info {
+    background: var(--info-color) !important;
+}
+
+/* Aliases for Blade Files (Fixing disappeared backgrounds) */
+.bg-gradient-primary {
+    background: var(--primary-color) !important;
+    background: var(--gradient-primary) !important;
+    color: white;
+}
+
+.bg-gradient-success {
+    background: var(--success-color) !important;
+    background: var(--gradient-success) !important;
+    color: white;
+}
+
+.bg-gradient-info {
+    background: var(--info-color) !important;
+    background: var(--gradient-info) !important;
+    color: white;
+}
+
+/* Icon Wrapper */
+.icon-wrapper-primary {
+    background: var(--primary-color) !important;
+    color: white;
+}
+
+.icon-wrapper-success {
+    background: var(--success-color) !important;
+    color: white;
+}
+
+.icon-wrapper-info {
+    background: var(--info-color) !important;
+    color: white;
+}
+
+/* Badge Colors */
+.badge-primary-gradient {
+    background: var(--primary-color) !important;
+    box-shadow: none;
+    color: white;
+}
+
+.badge-success-gradient {
+    background: var(--success-color) !important;
+    box-shadow: none;
+    color: white;
+}
+
+.badge-info-gradient {
+    background: var(--info-color) !important;
+    box-shadow: none;
+    color: white;
+}
+
+/* Text Gradients (Disabled for Serious Mode) */
+.text-gradient-primary {
+    color: var(--primary-color) !important;
+    background: none;
+}

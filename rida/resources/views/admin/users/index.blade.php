@@ -1,51 +1,69 @@
 <x-app-layout>
-  <x-slot name="header">
-    <div class="flex items-start justify-between gap-4">
-      <div>
-        <h2 class="font-semibold text-xl text-gray-900 dark:text-white leading-tight">Admin • Users</h2>
-        <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">Manage users and admin roles.</p>
-      </div>
-      <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center rounded-2xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-gray-50 dark:bg-white/5 dark:border-white/10 dark:text-white dark:hover:bg-white/10">
-        Admin Dashboard
-      </a>
+  <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title display-6 fw-bold mb-1 text-gradient-primary">User Management</h1>
+      <p class="page-subtitle mb-0">System users and permissions.</p>
     </div>
-  </x-slot>
+    <a href="{{ route('admin.dashboard') }}" class="btn btn-glass rounded-pill px-4 fw-bold text-main hover-scale">
+      <i class="fas fa-arrow-left me-2"></i>Dashboard
+    </a>
+  </div>
 
-  <div class="rounded-3xl border border-gray-200 bg-white shadow-sm dark:bg-white/5 dark:border-white/10 overflow-hidden">
-    <div class="p-6">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left">
+  <div class="card card-ui border-0 overflow-hidden shadow-sm">
+    <div class="card-header d-flex align-items-center gap-3">
+      <div class="bg-gradient-primary rounded-3 p-2 text-white" style="width: 44px; height: 44px;">
+        <i class="fas fa-users"></i>
+      </div>
+      <div>
+        <h5 class="mb-0 fw-bold text-main font-serif">System Users</h5>
+        <p class="text-muted small mb-0">Registered members</p>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-ui align-middle mb-0">
           <thead>
-            <tr class="border-b border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200">
-              <th class="py-2 pr-4">Name</th>
-              <th class="py-2 pr-4">Email</th>
-              <th class="py-2 pr-4">Role</th>
-              <th class="py-2 pr-4">Action</th>
+            <tr>
+              <th class="ps-4">User</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th class="text-end pe-4">Actions</th>
             </tr>
           </thead>
           <tbody>
             @foreach($users as $u)
-              <tr class="border-b border-gray-100 dark:border-white/5">
-                <td class="py-3 pr-4 font-semibold text-gray-900 dark:text-white">{{ $u->name }}</td>
-                <td class="py-3 pr-4 text-gray-600 dark:text-gray-300">{{ $u->email }}</td>
-                <td class="py-3 pr-4">
-                  @if($u->is_admin)
-                    <span class="px-2 py-1 text-xs rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-200">Admin</span>
-                  @else
-                    <span class="px-2 py-1 text-xs rounded bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-gray-200">User</span>
-                  @endif
-                </td>
-                <td class="py-3 pr-4">
-                  <form method="POST" action="{{ route('admin.users.toggleAdmin', $u) }}"
-                        onsubmit="return confirm('Toggle admin role for this user?')">
+            <tr>
+              <td class="ps-4">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold bg-gradient-primary w-40px h-40px fs-6">
+                    {{ strtoupper(substr($u->name, 0, 1)) }}
+                  </div>
+                  <span class="fw-semibold text-main">{{ $u->name }}</span>
+                </div>
+              </td>
+              <td class="text-muted">{{ $u->email }}</td>
+              <td>
+                @if($u->is_admin)
+                  <span class="badge bg-gradient-primary text-white px-3 py-2 rounded-pill">Admin</span>
+                @else
+                  <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-20 px-3 py-2 rounded-pill">User</span>
+                @endif
+              </td>
+              <td class="text-end pe-4">
+                <div class="d-flex justify-content-end gap-2">
+                  <form method="POST" action="{{ route('admin.users.toggleAdmin', $u) }}" onsubmit="return confirm('Toggle admin role?');" class="d-inline">
                     @csrf
                     @method('PATCH')
-                    <button class="inline-flex items-center rounded-xl bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:opacity-90">
-                      Toggle Admin
-                    </button>
+                    <button type="submit" class="btn btn-sm btn-primary rounded-pill px-3" title="Toggle Admin"><i class="fas fa-user-shield"></i></button>
                   </form>
-                </td>
-              </tr>
+                  <form method="POST" action="{{ route('admin.users.destroy', $u) }}" onsubmit="return confirm('Delete this user?');" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-glass text-danger rounded-pill px-3" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                  </form>
+                </div>
+              </td>
+            </tr>
             @endforeach
           </tbody>
         </table>

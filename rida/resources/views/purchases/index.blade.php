@@ -1,78 +1,128 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-start justify-between gap-4">
-            <div>
-                <h2 class="font-semibold text-xl text-gray-900 dark:text-white leading-tight">
-                    My Purchases
-                </h2>
-                <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">
-                    View the lands you bought and jump to them on the map.
-                </p>
-            </div>
-
-            <div class="flex flex-wrap gap-2">
-                <x-btn variant="secondary" href="{{ route('lands.index') }}">My Lands</x-btn>
-                <x-btn variant="secondary" href="{{ url('/map') }}">Public Map</x-btn>
-                @if(Route::has('sales.index'))
-                    <x-btn variant="secondary" href="{{ route('sales.index') }}">My Sales</x-btn>
-                @endif
-            </div>
+    <div class="page-header text-center mb-4">
+        <h1 class="page-title display-6 fw-bold mb-2 text-gradient-primary">My Transactions</h1>
+        <p class="page-subtitle mb-0 mx-auto" style="max-width: 32rem;">Purchases and sales history in one place.</p>
+        <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap">
+            <a href="{{ route('lands.index') }}" class="btn btn-glass rounded-pill px-3 fw-bold text-main hover-scale">
+                <i class="fas fa-layer-group me-2"></i>My Lands
+            </a>
+            @if(Route::has('sales.index'))
+            <a href="{{ route('sales.index') }}" class="btn btn-glass rounded-pill px-3 fw-bold text-main hover-scale">
+                <i class="fas fa-coins me-2"></i>My Sales
+            </a>
+            @endif
         </div>
-    </x-slot>
+    </div>
 
-    @if($purchases->count() === 0)
-        <div class="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:bg-white/5 dark:border-white/10">
-            <p class="text-gray-700 dark:text-gray-200">No purchases yet.</p>
-        </div>
-    @else
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            @foreach($purchases as $purchase)
-                <div class="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden dark:bg-white/5 dark:border-white/10">
-                    <div class="p-5">
-                        <div class="flex items-start justify-between gap-3">
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-                                    {{ $purchase->land->title ?? 'Deleted land' }}
-                                </h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">
-                                    Purchased on {{ $purchase->created_at->format('Y-m-d') }}
-                                </p>
-                            </div>
-
-                            <x-badge type="sale">Owned</x-badge>
-                        </div>
-
-                        <div class="mt-4 grid grid-cols-2 gap-3">
-                            <div class="rounded-2xl border border-gray-200 bg-gray-50 p-3 dark:bg-white/5 dark:border-white/10">
-                                <div class="text-xs text-gray-500 dark:text-gray-300">Price</div>
-                                <div class="font-bold text-gray-900 dark:text-white">
-                                    {{ number_format((float)$purchase->price, 2) }}
-                                </div>
-                            </div>
-
-                            <div class="rounded-2xl border border-gray-200 bg-gray-50 p-3 dark:bg-white/5 dark:border-white/10">
-                                <div class="text-xs text-gray-500 dark:text-gray-300">Seller</div>
-                                <div class="font-semibold text-gray-900 dark:text-white">
-                                    {{ $purchase->seller->name ?? 'Unknown' }}
-                                </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-300">
-                                    {{ $purchase->seller->email ?? '' }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-5 flex flex-wrap gap-2">
-                            @if($purchase->land)
-                                <x-btn variant="blue" href="{{ url('/map?land_id='.$purchase->land->id) }}">Show on Map</x-btn>
-                            @else
-                                <span class="inline-flex items-center justify-center rounded-2xl px-4 py-2.5 text-sm font-semibold bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-300 cursor-not-allowed">
-                                    Map
-                                </span>
-                            @endif
-                        </div>
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card card-ui border-0 shadow-sm h-100">
+                <div class="card-header d-flex align-items-center gap-3">
+                    <div class="bg-gradient-success rounded-3 p-2 text-white" style="width: 44px; height: 44px;">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold text-main font-serif">My Purchases</h5>
+                        <p class="text-muted small mb-0">Properties you acquired</p>
                     </div>
                 </div>
-            @endforeach
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush border-0">
+                        @forelse($buying as $purchase)
+                        <div class="list-group-item border-glass border-0 p-4 hover-bg-glass">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-success bg-opacity-10 p-2 rounded-3 text-success">
+                                        <i class="fas fa-file-contract"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-main font-serif">{{ $purchase->land->title ?? 'Unknown' }}</div>
+                                        <div class="small text-muted">{{ $purchase->created_at->format('M d, Y') }}</div>
+                                    </div>
+                                </div>
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 rounded-pill px-3">Bought</span>
+                            </div>
+                            <div class="p-3 rounded-3 card-ui border-0 mb-2">
+                                <div class="d-flex justify-content-between align-items-center small">
+                                    <span class="text-muted">Price</span>
+                                    <span class="fw-bold text-success">{{ number_format($purchase->price, 2) }} LNDC</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top border-glass small">
+                                    <span class="text-muted">Seller</span>
+                                    <span class="fw-semibold text-main">{{ $purchase->seller->name ?? '—' }}</span>
+                                </div>
+                            </div>
+                            @if($purchase->land)
+                            <a href="{{ route('map') }}" class="btn btn-sm btn-primary rounded-pill px-3">View on Map</a>
+                            @endif
+                        </div>
+                        @empty
+                        <div class="text-center py-5 px-4">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-4 d-inline-block mb-3">
+                                <i class="fas fa-shopping-basket fa-2x text-primary"></i>
+                            </div>
+                            <p class="text-muted fw-bold mb-2">No purchases yet</p>
+                            <a href="{{ route('map') }}" class="btn btn-primary rounded-pill px-4 hover-scale">Explore Map</a>
+                        </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
         </div>
-    @endif
+
+        <div class="col-lg-6">
+            <div class="card card-ui border-0 shadow-sm h-100">
+                <div class="card-header d-flex align-items-center gap-3">
+                    <div class="bg-gradient-accent rounded-3 p-2 text-white" style="width: 44px; height: 44px;">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold text-main font-serif">My Sales</h5>
+                        <p class="text-muted small mb-0">Properties you sold</p>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush border-0">
+                        @forelse($selling as $sale)
+                        <div class="list-group-item border-glass border-0 p-4 hover-bg-glass">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-warning bg-opacity-10 p-2 rounded-3 text-warning">
+                                        <i class="fas fa-handshake"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-main font-serif">{{ $sale->land->title ?? 'Unknown' }}</div>
+                                        <div class="small text-muted">{{ $sale->created_at->format('M d, Y') }}</div>
+                                    </div>
+                                </div>
+                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-20 rounded-pill px-3">Sold</span>
+                            </div>
+                            <div class="p-3 rounded-3 card-ui border-0 mb-2">
+                                <div class="d-flex justify-content-between align-items-center small">
+                                    <span class="text-muted">Sold for</span>
+                                    <span class="fw-bold text-warning">{{ number_format($sale->price, 2) }} LNDC</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top border-glass small">
+                                    <span class="text-muted">Buyer</span>
+                                    <span class="fw-semibold text-main">{{ $sale->buyer->name ?? '—' }}</span>
+                                </div>
+                            </div>
+                            @if($sale->land)
+                            <a href="{{ route('map') }}" class="btn btn-sm btn-glass rounded-pill px-3 fw-bold text-main hover-scale">View on Map</a>
+                            @endif
+                        </div>
+                        @empty
+                        <div class="text-center py-5 px-4">
+                            <div class="bg-warning bg-opacity-10 rounded-circle p-4 d-inline-block mb-3">
+                                <i class="fas fa-piggy-bank fa-2x text-warning"></i>
+                            </div>
+                            <p class="text-muted fw-bold mb-0">No sales yet</p>
+                            <p class="text-muted small mb-0">Sales will appear here</p>
+                        </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>
